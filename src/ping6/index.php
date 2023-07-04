@@ -18,6 +18,7 @@ showHeader();
     <?php } else { ?>
       <div class="row pt-5">
         <p>Performs an ICMPv6 ping request using this online tool. For example, try <a href="?host=2001:4860:4860::8888">2001:4860:4860::8888</a> or <a href="?host=google.com"/>google.com</a> to check their ping6 response.</p>
+        <p>Interested in a ping4 request instead? Try <a href="https://ping4.network">ping4.network</a> instead.</p>
       </div>
     <?php } ?>
     </div>
