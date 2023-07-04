@@ -1,10 +1,99 @@
 <?php
-function ping4($host) {
+require_once ("db.php");
+require_once ("PingResult.php");
+
+function ping4($host): PingResult {
   $output = shell_exec("ping4 -c3 ".$_GET["host"]);
+
+  $db = new PingDB();
+
   if ($output == "") {
-    $output = "No response from ".$host;
+    $result = new PingResult("", htmlspecialchars($host), 0, true, "$host is Unreachable");
+    if ($db) {
+      $db->addPingResult($result);
+    }
+    return $result;
+  } else {
+    // https://write.corbpie.com/ping-address-and-get-min-max-average-with-php/
+    $output_lines = explode("\n", $output);
+    //print_r($output_lines);
+    $ping_line = explode(" ", $output_lines[0]);
+    //print_r($ping_line);
+    $ip = $ping_line[2];
+    $ip = trim($ip, "()");
+    $values = explode("/", $output_lines[7]);
+    $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
+    if ($db) {
+      $db->addPingResult($result);
+    }
+    return $result;
   }
-  return $output;
+}
+
+function last24HoursPingResults(PingResult $result) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->last24HoursPingResults($result);
+    ?><script type="text/javascript">
+    var chart = c3.generate({
+        bindto: '#chart',
+        size: {
+          height: 250,
+          width: 400
+        },
+        data: {
+            x: 'x',
+            xFormat: '%Y-%m-%d %H:%M:%S',
+            columns: [
+              ['x', '<?php echo implode("','", array_keys($results)); ?>'],
+              ['<?php echo $result->ip; ?>', '<?php echo implode("','", array_values($results)); ?>']
+            ],
+            colors: {
+              '<?php echo $result->ip; ?>': '#209CEE',
+            }
+        },
+        axis: {
+          x: {
+              type: 'timeseries',
+              label: {
+                text: 'Last 24h',
+                position: 'outer-center',
+              },
+              tick: {
+                culling: {
+                  max: 2
+                }
+              }
+          },
+          y: {
+            label: {
+              text: 'RTT (ms)',
+              position: 'outer-middle',
+            },
+            min: 0,
+            padding: { top:0, bottom:0 }
+          }
+        },
+        legend: {
+          show: false
+        },
+      });
+      </script>
+    <?php
+  }
+}
+
+function statComparison(PingResult $result) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->statComparison($result);
+    foreach ($results as $key => $value) {
+      echo "$key: $value";
+    }
+  }
 }
 
 // https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
