@@ -25,7 +25,7 @@ docker run -it --rm -p 8080:8080 -v ./data:/data -e SQLITE_DATABASE="ping4.db" c
 ```
 apt update
 apt upgrade
-apt install nginx certbot python3-certbot-nginx php php-cli php-fpm php-json php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath
+apt install nginx certbot python3-certbot-nginx php php-cli php-fpm php-json php-mysql php-zip php-gd  php-mbstring php-curl php-xml php-pear php-bcmath php-sqlite3
 systemctl disable --now apache2
 ```
 
