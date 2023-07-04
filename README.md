@@ -10,6 +10,17 @@ deployed in an online fashion to make it easy for people to interact with them.
 Eventually I'll build apis attached to them so people can use them directly for
 money. At the start, I'll see if I can make it work with advertisements.
 
+## Local dev on docker
+```
+docker-compose up
+```
+
+### Migrations
+```
+docker exec -u www-data:www-data -it network-tools_php-fpm-ping_1 php ping4/migrate.php
+docker run -it --rm -p 8080:8080 -v ./data:/data -e SQLITE_DATABASE="ping4.db" coleifer/sqlite-web
+```
+
 ## Getting started on a fresh server
 ```
 apt update
@@ -37,3 +48,10 @@ systemctl restart nginx
 
 ```
 certbot --nginx -d <domain> -d www.<domain>
+```
+
+### Create / Migrate db
+```
+php /var/www/html/migrate.php
+chown www-data:www-data /var/www/ping4.db
+```
