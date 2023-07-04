@@ -17,7 +17,7 @@ showHeader();
       </div>
     <?php } else { ?>
       <div class="row pt-5">
-        <p>Performs an ICMPv4 ping request using this online tool. For example, try <a href="?host=8.8.8.8">8.8.8.8</a> or <a href="?host=google.com"/>google.com</a> to check their ping4 response.
+        <p>Performs an ICMPv4 ping request using this online tool. For example, try <a href="?host=8.8.8.8">8.8.8.8</a> or <a href="?host=google.com"/>google.com</a> to check their ping4 response.</p>
       </div>
     <?php } ?>
     </div>
