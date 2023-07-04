@@ -8,6 +8,8 @@ services:
     volumes:
       - ./src:/var/www/html
       - ./default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - default
     links:
       - php-fpm-ping
   php-fpm-ping:
@@ -16,3 +18,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./src:/var/www/html
+    networks:
+      - default
+      - net2
+networks:
+  net2:
+    name: net2
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:db8:a::/64
+          gateway: 2001:db8:a::1
