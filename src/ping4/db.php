@@ -77,7 +77,7 @@ class PingDB extends SQLite3 {
   function lastPings($n): array {
     $result = array();
     $sql =<<<EOF
-      SELECT DISTINCT HOST FROM PING ORDER BY TIMESTAMP ASC LIMIT $n
+      SELECT DISTINCT HOST FROM PING ORDER BY TIMESTAMP DESC LIMIT $n
     EOF;
     $results = $this->query($sql);
     while ($row = $results->fetchArray()) {
