@@ -151,7 +151,12 @@ function reconstruct_url(){
   $url_parts = parse_url($url);
   $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
 
-  return remove_filename($constructed_url);
+  $remove_file = remove_filename($constructed_url);
+  if ($remove_file == "https:///" || $remove_file == "http://") {
+    return $constructed_url;
+  } else {
+    return $remove_file;
+  }
 }
 
 function showHeader($title) {
