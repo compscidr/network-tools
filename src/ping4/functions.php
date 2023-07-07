@@ -8,7 +8,7 @@ function ping4($host): PingResult {
   $db = new PingDB();
 
   if ($output == "") {
-    $result = new PingResult("", htmlspecialchars($host), 0, true, "$host is Unreachable");
+    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable");
     if ($db) {
       $db->addPingResult($result);
     }
@@ -18,18 +18,29 @@ function ping4($host): PingResult {
     $output_lines = explode("\n", $output);
     //print_r($output_lines);
     $ping_line = explode(" ", $output_lines[0]);
+
     //print_r($ping_line);
     $ip = $ping_line[2];
     $ip = trim($ip, "()");
-    $values = explode("/", $output_lines[7]);
-    $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-    $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-    $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-    $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
-    if ($db) {
-      $db->addPingResult($result);
+
+    $rtt_line = $output_lines[sizeof($output_lines)-1];
+    if(str_contains($rtt_line, "rtt")) {
+      $values = explode("/", $rtt_line);
+      $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
+      if ($db) {
+        $db->addPingResult($result);
+      }
+      return $result;
+    } else {
+      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output);
+      if ($db) {
+        $db->addPingResult($result);
+      }
+      return $result;
     }
-    return $result;
   }
 }
 
