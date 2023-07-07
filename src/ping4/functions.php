@@ -90,10 +90,45 @@ function statComparison(PingResult $result) {
   $db = new PingDB();
   if ($db) {
     $results = $db->statComparison($result);
+    ?><ul class="list-unstyled text-center"><?php
     foreach ($results as $key => $value) {
-      echo "$key: $value";
+      echo "<li>$key: $value</li>";
     }
+    ?></ul><?php
   }
+}
+
+function globalStats() {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->globalStats();
+    ?><ul class="list-unstyled text-center"><?php
+    foreach ($results as $key => $value) {
+      echo "<li>$key: $value</li>";
+    }
+    ?></ul><?php
+  }
+}
+
+function lastPings($n) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->lastPings($n);
+    ?><ul class="list-unstyled text-center"><li><b>Recent Pings<b></li><?php
+    foreach ($results as $result) {
+      ?><li><a href="<?php echo reconstruct_url(); ?>?host=<?php echo $result;?>"><?php echo $result;?></a></li><?php
+    }
+    ?></ul><?php
+  }
+}
+
+// https://stackoverflow.com/a/31503474
+function remove_filename($url)
+{
+    $file_info = pathinfo($url);
+    return isset($file_info['extension'])
+        ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
+        : $url;
 }
 
 // https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
@@ -116,19 +151,15 @@ function reconstruct_url(){
   $url_parts = parse_url($url);
   $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
 
-  return $constructed_url;
+  return remove_filename($constructed_url);
 }
 
-function showHeader() {
+function showHeader($title) {
   ?>
 <!doctype html>
 <html lang="en">
   <head>
-<?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
-    <title>ping4 - pinging <?php echo $_GET["host"] ?></title>
-<?php } else { ?>
-    <title>ping4 - send ICMPv4 ECHO_REQUEST to network hosts</title>
-<?php } ?>
+    <title><?php echo $title; ?></title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0C1MJF4SCC"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

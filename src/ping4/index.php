@@ -1,6 +1,10 @@
 <?php
 require_once("functions.php");
-showHeader();
+if (isset($_GET["host"]) && $_GET["host"] != "") {
+  showHeader("ping4 - pinging ".$_GET["host"]);
+} else {
+  showHeader("ping4 - send ICMPv4 ECHO_REQUEST to network hosts");
+}
 ?>
   <body class="d-flex">
     <div class="mx-auto flex-column w-50">
@@ -25,6 +29,7 @@ showHeader();
       <div class="row pt-5">
         <p>Performs an ICMPv4 ping request using this online tool. For example, try <a href="?host=8.8.8.8">8.8.8.8</a> or <a href="?host=google.com"/>google.com</a> to check their ping4 response.</p>
         <p>Interested in a ping6 request instead? Try <a href="https://ping6.network">ping6.network</a> instead.</p>
+        <p>Checkout <a href="stats.php">Ping4 stats</a>.</p>
       </div>
 <?php } ?>
     </div>

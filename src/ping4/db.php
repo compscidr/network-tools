@@ -42,9 +42,48 @@ class PingDB extends SQLite3 {
     EOF;
     $results = $this->query($sql);
     $row = $results->fetchArray();
-    $orderedResult["historical avg"] = number_format($row[0], 2, '.', '')."ms";
+    $orderedResult["Historical Average"] = number_format($row[0], 2, '.', '')."ms";
+
+    $sql =<<<EOF
+      SELECT COUNT(ID) FROM PING WHERE (HOST='$pingResult->hostname' OR IP='$pingResult->ip')
+    EOF;
+    $results = $this->query($sql);
+    $row = $results->fetchArray();
+    $orderedResult["Total Pings"] = $row[0];
 
     return $orderedResult;
+  }
+
+  function globalStats(): array {
+    $orderedResult = array();
+
+    $sql =<<<EOF
+      SELECT COUNT(ID) FROM PING
+    EOF;
+    $results = $this->query($sql);
+    $row = $results->fetchArray();
+    $orderedResult["Total Pings"] = $row[0];
+
+    $sql =<<<EOF
+      SELECT AVG(NULLIF(AVG_RTT_MS, 0)) FROM PING
+    EOF;
+    $results = $this->query($sql);
+    $row = $results->fetchArray();
+    $orderedResult["Average RTT"] = number_format($row[0], 2, '.', '')."ms";
+
+    return $orderedResult;
+  }
+
+  function lastPings($n): array {
+    $result = array();
+    $sql =<<<EOF
+      SELECT DISTINCT HOST FROM PING ORDER BY TIMESTAMP ASC LIMIT $n
+    EOF;
+    $results = $this->query($sql);
+    while ($row = $results->fetchArray()) {
+      array_push($result, $row[0]);
+    }
+    return $result;
   }
 }
 
