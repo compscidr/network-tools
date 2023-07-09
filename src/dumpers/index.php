@@ -1,81 +1,5 @@
 <?php
-function formatBufferData($data) {
-  $count = 0;
-  $data = preg_replace("/\s*/m", '', $data);
-  $data = str_split($data, 2);
-  for ($i = 0; $i < count($data); $i++) {
-    if ($i % 16 == 0) {
-      $count = 0;
-      if ($i != 0) {
-        ?></div><?php
-      }
-      ?><div class="row mono" id="b<?php echo sprintf('%04x', $i); ?>"><?php printHexByte($data[$i]); echo " ";
-    } else {
-      printHexByte($data[$i]); echo " ";
-      if ($count == 6) {
-        echo "&nbsp;";
-      }
-      $count++;
-    }
-  }
-  ?></div><?php
-}
-
-function displayAddresses($data) {
-  $data = preg_replace("/\s*/m", '', $data);
-  $data = str_split($data, 2);
-  for ($i = 0; $i < count($data); $i++) {
-    if ($i % 16 == 0) {
-      if ($i != 0) {
-        ?></div><?php
-      }
-      ?><div class="row mono" id="a<?php echo sprintf('%04x', $i);?>"><?php echo sprintf('%04x', $i);?><?php
-    }
-  }
-  ?></div><?php
-}
-
-/**
- * Takes a 2-byte hex data and adds leading zero's if necessary. If not a hex
- * value (ie, out of bounds), colors it red.
- */
-function printHexByte($data) {
-  $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', $data);
-  if ($hexStr != $data) {
-    ?><span color="red"><?php echo "OG: $data; AFTER: $hexStr"; ?></span><?php
-  } else {
-    if (strlen($hexStr) != 2) {
-      $hexStr = "0".$hexStr;
-    }
-    echo $hexStr;
-  }
-}
-
-function formatBufferDataAscii($data) {
-  $data = preg_replace("/\s*/m", '', $data);
-  $data = str_split($data, 2);
-  for ($i = 0; $i < count($data); $i++) {
-    if ($i % 16 == 0) {
-      if ($i != 0) {
-        ?></div><?php
-      }
-      ?><div class="row mono"><?php printAsciiByte($data[$i]);
-    } else {
-      printAsciiByte($data[$i]);
-    }
-  }
-}
-
-function printAsciiByte($data) {
-  $decimal = hexdec($data);
-  if ($decimal < 32 or $decimal > 126) {
-    //$decimal = '<div class="col text-secondary">&bull;</span>';
-    $decimal = "&bull;";
-  } else {
-    $decimal = chr($decimal);
-  }
-  echo $decimal;
-}
+require_once("functions.php");
 
 ?>
 <!doctype html>
@@ -99,7 +23,7 @@ function printAsciiByte($data) {
   <body class="d-flex">
     <div class="mx-auto flex-column w-75">
       <div class="row">
-        <h1 class="text-center pt-5 logo">Hexdump Buffer Decoder</h1>
+        <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">Hexdump Buffer Decoder</a></h1>
       </div>
       <div class="row">
         <form method="get" action="">
@@ -107,8 +31,9 @@ function printAsciiByte($data) {
           <input class="form-control" type="submit" value="Decode"/>
         </form>
       </div>
+<?php if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") { ?>
       <div class="row pt-2">
-        <h2>Ascii Decode</h2>
+        <h2 class="text-center logo">Ascii Decode</h2>
         <div class="col-auto" id="addresses" style="min-width: 62px;">
           <?php displayAddresses($_GET["bufferData"]); ?>
         </div>
@@ -119,6 +44,7 @@ function printAsciiByte($data) {
           <?php formatBufferDataAscii($_GET["bufferData"]); ?>
         </div>
       </div>
+<?php } ?>
     </div>
   </body>
 </html>

@@ -1,3 +1,5 @@
 .mono {
   font-family: monospace;
 }
+.logo { color: #209CEE }
+.logo a { color: #209CEE; text-decoration: none; }
