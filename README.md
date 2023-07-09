@@ -55,5 +55,5 @@ certbot --nginx -d <domain> -d www.<domain>
 mkdir /data
 sudo chown www-data:www-data /data
 php /var/www/html/migrate.php
-chown www-data:www-data /var/www/ping4.db
+chown www-data:www-data /data/ping4.db
 ```
