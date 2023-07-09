@@ -3,7 +3,7 @@
 // https://www.tutorialspoint.com/sqlite/sqlite_php.htm
 class PingDB extends SQLite3 {
   function __construct() {
-    $this->open("/data/ping4.db");
+    $this->open("/data/ping6.db");
   }
 
   function addPingResult(PingResult $result) {

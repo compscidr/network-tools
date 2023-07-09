@@ -1,10 +1,146 @@
 <?php
-function ping6($host) {
+require_once ("db.php");
+require_once ("PingResult.php");
+
+function ping6($host): PingResult {
   $output = shell_exec("ping6 -c3 ".$_GET["host"]);
+
+  $db = new PingDB();
+
   if ($output == "") {
-    $output = "No response from ".$host;
+    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable");
+    if ($db) {
+      $db->addPingResult($result);
+    }
+    return $result;
+  } else {
+    // https://write.corbpie.com/ping-address-and-get-min-max-average-with-php/
+    $output_lines = explode("\n", $output);
+    //print_r($output_lines);
+    $ping_line = explode(" ", $output_lines[0]);
+
+    //print_r($ping_line);
+    $ip = $ping_line[2];
+    $ip = trim($ip, "()");
+
+    // minus 2 because there is a last line with just a /n char
+    $rtt_line = $output_lines[sizeof($output_lines)-2];
+    if(str_contains($rtt_line, "rtt")) {
+      $values = explode("/", $rtt_line);
+      $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
+      if ($db) {
+        $db->addPingResult($result);
+      }
+      return $result;
+    } else {
+      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output);
+      if ($db) {
+        $db->addPingResult($result);
+      }
+      return $result;
+    }
   }
-  return $output;
+}
+
+function last24HoursPingResults(PingResult $result) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->last24HoursPingResults($result);
+    ?><script type="text/javascript">
+    var chart = c3.generate({
+        bindto: '#chart',
+        size: {
+          height: 250,
+          width: 400
+        },
+        data: {
+            x: 'x',
+            xFormat: '%Y-%m-%d %H:%M:%S',
+            columns: [
+              ['x', '<?php echo implode("','", array_keys($results)); ?>'],
+              ['<?php echo $result->ip; ?>', '<?php echo implode("','", array_values($results)); ?>']
+            ],
+            colors: {
+              '<?php echo $result->ip; ?>': '#209CEE',
+            }
+        },
+        axis: {
+          x: {
+              type: 'timeseries',
+              label: {
+                text: 'Last 24h',
+                position: 'outer-center',
+              },
+              tick: {
+                culling: {
+                  max: 2
+                }
+              }
+          },
+          y: {
+            label: {
+              text: 'RTT (ms)',
+              position: 'outer-middle',
+            },
+            min: 0,
+            padding: { top:0, bottom:0 }
+          }
+        },
+        legend: {
+          show: false
+        },
+      });
+      </script>
+    <?php
+  }
+}
+
+function statComparison(PingResult $result) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->statComparison($result);
+    ?><ul class="list-unstyled text-center"><?php
+    foreach ($results as $key => $value) {
+      echo "<li>$key: $value</li>";
+    }
+    ?></ul><?php
+  }
+}
+
+function globalStats() {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->globalStats();
+    ?><ul class="list-unstyled text-center"><?php
+    foreach ($results as $key => $value) {
+      echo "<li>$key: $value</li>";
+    }
+    ?></ul><?php
+  }
+}
+
+function lastPings($n) {
+  $db = new PingDB();
+  if ($db) {
+    $results = $db->lastPings($n);
+    ?><ul class="list-unstyled text-center"><li><b>Recent Pings<b></li><?php
+    foreach ($results as $result) {
+      ?><li><a href="<?php echo reconstruct_url(); ?>?host=<?php echo $result;?>"><?php echo $result;?></a></li><?php
+    }
+    ?></ul><?php
+  }
+}
+
+// https://stackoverflow.com/a/31503474
+function remove_filename($url)
+{
+    $file_info = pathinfo($url);
+    return isset($file_info['extension'])
+        ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
+        : $url;
 }
 
 // https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
@@ -27,34 +163,11 @@ function reconstruct_url(){
   $url_parts = parse_url($url);
   $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
 
-  return $constructed_url;
-}
-
-function showHeader() {
-  ?>
-<!doctype html>
-<html lang="en">
-  <head>
-    <?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
-    <title>ping4 - pinging <?php echo $_GET["host"] ?></title>
-  <?php } else { ?>
-    <title>ping6 - send ICMPv6 ECHO_REQUEST to network hosts</title>
-  <?php } ?>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LH68S6GQMZ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-LH68S6GQMZ');
-    </script>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Run an Ipv6 ICMPv6 ping online to test the reachability of an Ipv6 host">
-    <meta name="keywords" content="Ping6, Online, Ipv6, ICMPv6">
-  </head>
-  <?php
+  $remove_file = remove_filename($constructed_url);
+  if ($remove_file == "https:///" || $remove_file == "http://") {
+    return $constructed_url;
+  } else {
+    return $remove_file;
+  }
 }
 ?>

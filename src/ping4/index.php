@@ -1,5 +1,6 @@
 <?php
 require_once("functions.php");
+require_once("template.php");
 if (isset($_GET["host"]) && $_GET["host"] != "") {
   showHeader("ping4 - pinging ".$_GET["host"]);
 } else {
