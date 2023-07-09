@@ -88,6 +88,13 @@ function printAsciiByte($data) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Decode buffer hexdumps into a readable format">
     <meta name="keywords" content="hexdump, binary, decode, readable, ascii">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N2EK8QVKH4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N2EK8QVKH4');
+    </script>
   </head>
   <body class="d-flex">
     <div class="mx-auto flex-column w-75">
