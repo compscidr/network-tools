@@ -5,7 +5,7 @@ sequenceDiagram
     participant Router
     participant ISPa
     participant ISPb
-    participant endHost as  2001#58;4860t#58;4860t#58;t#58;8888
+    participant endHost as  2001#58;4860#58;4860#58;#58;8888
     Host->>Router: ICMP Echo, HopLimit=64
     Router->>ISPa: ICMP Echo, HopLimit=63
     ISPa->> ISPb: ICMP Echo, HopLimit=62
