@@ -23,7 +23,10 @@ function showHeader($title) {
 <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Run an Ipv6 ICMPv6 ping online to test the reachability of an Ipv6 host">
-    <meta name="keywords" content="Ping6, Online, Ipv6, ICMPv6">
+    <meta name="keywords" content="Ping6, Online, Ipv6, ICMPv6, Check, RTT, Response, Ping, Host, Hostname, Domain, Address, IP6">
+    <meta property='og:type' content='website' />
+    <meta property="og:title" content="<?php echo $title; ?>" />
+    <meta property="og:description" content="Run an Ipv6 ICMPv6 ping online to test the reachability of an Ipv6 host"/>
   </head>
   <?php
 }

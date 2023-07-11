@@ -24,6 +24,9 @@ function showHeader($title) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host">
     <meta name="keywords" content="Ping4, Online, Ipv4, ICMPv4">
+    <meta property='og:type' content='website' />
+    <meta property="og:title" content="<?php echo $title; ?>" />
+    <meta property="og:description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host"/>
   </head>
   <?php
 }
