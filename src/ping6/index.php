@@ -17,15 +17,19 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         </form>
       </div>
 <?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
-      <div class="row pt-5">
+      <div class="row">
+        <h2 class="text-center logo">Ping6 results for <?php echo $_GET["host"]; ?></h2>
+      </div>
+      <div class="row pt-5 text-center mx-auto">
         <pre><?php $result = ping6($_GET["host"]); echo $result->rawResult; ?></pre>
       </div>
-      <div class="row pt-5" id="chart">
-        <?php last24HoursPingResults($result); ?>
+      <div class="row pt-5 text-center mx-auto" style="max-width: 410px;">
+        <div id="chart"></div>
       </div>
       <div class="row pt-5">
         <?php statComparison($result); ?>
       </div>
+      <?php last24HoursPingResults($result); ?>
 <?php } else { ?>
       <div class="row pt-5">
         <p>Performs an ICMPv6 ping request using this online tool. For example, try <a href="?host=2001:4860:4860::8888">2001:4860:4860::8888</a> or <a href="?host=google.com"/>google.com</a> to check their ping6 response.</p>

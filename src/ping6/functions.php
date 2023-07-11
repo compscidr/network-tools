@@ -128,7 +128,7 @@ function lastPings($n) {
     $results = $db->lastPings($n);
     ?><ul class="list-unstyled text-center"><li><b>Recent Pings<b></li><?php
     foreach ($results as $result) {
-      ?><li><a href="<?php echo reconstruct_url(); ?>?host=<?php echo $result;?>"><?php echo $result;?></a></li><?php
+      ?><li><a href="<?php echo reconstruct_url(); ?>stats.php?host=<?php echo $result;?>"><?php echo $result;?></a></li><?php
     }
     ?></ul><?php
   }
