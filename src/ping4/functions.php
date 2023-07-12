@@ -50,7 +50,7 @@ function last24HoursPingResults(PingResult $result) {
   $db = new PingDB();
   if ($db) {
     $results = $db->last24HoursPingResults($result);
-    ?><script type="text/javascript">
+    ?><script>
     var chart = c3.generate({
         bindto: '#chart',
         size: {
@@ -127,7 +127,7 @@ function lastPings($n) {
   $db = new PingDB();
   if ($db) {
     $results = $db->lastPings($n);
-    ?><ul class="list-unstyled text-center"><li><b>Recent Pings<b></li><?php
+    ?><ul class="list-unstyled text-center"><li><b>Recent Pings</b></li><?php
     foreach ($results as $result) {
       ?><li><a href="<?php echo reconstruct_url(); ?>stats.php?host=<?php echo $result;?>"><?php echo $result;?></a></li><?php
     }

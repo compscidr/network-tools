@@ -17,16 +17,16 @@ function showHeader($title) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 <?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
   <!-- upgrading version may cause problems: https://stackoverflow.com/a/67613182 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css" integrity="sha512-cznfNokevSG7QPA5dZepud8taylLdvgr0lDqw/FEZIhluFsSwyvS81CMnRdrNSKwbsmc43LtRd2/WMQV+Z85AQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css" integrity="sha512-cznfNokevSG7QPA5dZepud8taylLdvgr0lDqw/FEZIhluFsSwyvS81CMnRdrNSKwbsmc43LtRd2/WMQV+Z85AQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js" integrity="sha512-FHsFVKQ/T1KWJDGSbrUhTJyS1ph3eRrxI228ND0EGaEp6v4a/vGwPWd3Dtd/+9cI7ccofZvl/wulICEurHN1pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js" integrity="sha512-+IpCthlNahOuERYUSnKFjzjdKXIbJ/7Dd6xvUp+7bEw0Jp2dg6tluyxLs+zq9BMzZgrLv8886T4cBSqnKiVgUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host">
     <meta name="keywords" content="Ping4, Online, Ipv4, ICMPv4">
-    <meta property='og:type' content='website' />
-    <meta property="og:title" content="<?php echo $title; ?>" />
-    <meta property="og:description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host"/>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?php echo $title; ?>">
+    <meta property="og:description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host">
   </head>
   <?php
 }

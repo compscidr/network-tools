@@ -11,8 +11,8 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
     <div class="mx-auto flex-column w-50">
       <div class="row">
         <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">ping4.network</a></h1>
-        <form id="ping4" method="get" action="" class="d-flex">
-          <input type="text" placeholder="IPv4 address or hostname" name="host" class="form-control me-2"/>
+        <form id="ping4" method="get" action="<?php echo reconstruct_url(); ?>index.php" class="d-flex">
+          <input type="text" placeholder="IPv4 address or hostname" name="host" class="form-control me-2">
           <input type="button" value="Ping Ipv4 host" onclick="document.getElementById('ping4').submit();" class="btn btn-primary">
         </form>
       </div>
@@ -32,7 +32,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
       <?php last24HoursPingResults($result); ?>
 <?php } else { ?>
       <div class="row pt-5">
-        <p>Performs an ICMPv4 ping request using this online tool. For example, try <a href="?host=8.8.8.8">8.8.8.8</a> or <a href="?host=google.com"/>google.com</a> to check their ping4 response.</p>
+        <p>Performs an ICMPv4 ping request using this online tool. For example, try <a href="?host=8.8.8.8">8.8.8.8</a> or <a href="?host=google.com">google.com</a> to check their ping4 response.</p>
         <p>Interested in a ping6 request instead? Try <a href="https://ping6.network">ping6.network</a> instead.</p>
         <p>Checkout <a href="stats.php">Ping4 stats</a>.</p>
       </div>
@@ -52,7 +52,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
             which is the time between when the packet was sent and when the reply was received.</p>
         <p>If ping4 is called with a hostname instead of an Ipv4 address, it may kick off a DNS request to resolve
             the Ipv4 address of the hostname prior to generating the ICMPv4 packet.</p>
-        <img src="ping4.png" alt="ping4 sequence diagram"/>
+        <img src="ping4.png" alt="ping4 sequence diagram">
       </div>
 <?php } ?>
     </div>

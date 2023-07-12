@@ -11,8 +11,8 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
     <div class="mx-auto flex-column w-50">
       <div class="row">
         <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">ping6.network</a></h1>
-        <form id="ping6" method="get" action="" class="d-flex">
-          <input type="text" placeholder="IPv6 address or hostname" name="host" class="form-control me-2"/>
+        <form id="ping6" method="get" action="<?php echo reconstruct_url(); ?>index.php" class="d-flex">
+          <input type="text" placeholder="IPv6 address or hostname" name="host" class="form-control me-2">
           <input type="button" value="Ping Ipv6 host" onclick="document.getElementById('ping6').submit();" class="btn btn-primary">
         </form>
       </div>
@@ -32,7 +32,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
       <?php last24HoursPingResults($result); ?>
 <?php } else { ?>
       <div class="row pt-5">
-        <p>Performs an ICMPv6 ping request using this online tool. For example, try <a href="?host=2001:4860:4860::8888">2001:4860:4860::8888</a> or <a href="?host=google.com"/>google.com</a> to check their ping6 response.</p>
+        <p>Performs an ICMPv6 ping request using this online tool. For example, try <a href="?host=2001:4860:4860::8888">2001:4860:4860::8888</a> or <a href="?host=google.com">google.com</a> to check their ping6 response.</p>
         <p>Interested in a ping4 request instead? Try <a href="https://ping4.network">ping4.network</a> instead.</p>
         <p>Checkout <a href="stats.php">Ping6 stats</a>.</p>
       </div>
@@ -52,7 +52,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         which is the time between when the packet was sent and when the reply was received.</p>
     <p>If ping6 is called with a hostname instead of an Ipv4 address, it may kick off a DNS request to resolve
         the Ipv6 address of the hostname prior to generating the ICMPv6 packet.</p>
-    <img src="ping6.png" alt="ping6 sequence diagram"/>
+    <img src="ping6.png" alt="ping6 sequence diagram">
     </div>
 <?php } ?>
     </div>
