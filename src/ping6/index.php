@@ -36,6 +36,24 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         <p>Interested in a ping4 request instead? Try <a href="https://ping4.network">ping4.network</a> instead.</p>
         <p>Checkout <a href="stats.php">Ping6 stats</a>.</p>
       </div>
+
+    <div class="row pt-5">
+    <h2 class="logo">How does ping6 work?</h2>
+    <p>When ping6 is called, an ICMPv6 packet is generated at the host calling the ping6 program. Most people are
+        connected to the Internet by a router at their home, so the packet is sent there next, and then from the router
+        to the ISP. If the ISP can find a route to the end host, it will forward the packet (perhaps across many more hops)
+        until it reaches the ISP of the destination device (or perhaps some hosting provider network like AWS, GCP, Azure, etc).</p>
+    <p>At each hop along the way the HopLimit field in the IPv6 packet is decreased. If the HopLimit field reaches 0,
+        the ICMPv6 packet is dropped. An ICMP reply may also be sent back to the source indicating that the host is not
+        reachable. This may also occur if a device along the path cannot locate a route to the destination.</p>
+    <p>If the packet does successfully reach the intended destination, the destination generates an ICMP-reply
+        packet with a new HopLimit, which is then decreased for every hop on the route back to the source. When the
+        ICMP-reply is received at the source, the ping program outputs a line of text with the round trip time (RTT)
+        which is the time between when the packet was sent and when the reply was received.</p>
+    <p>If ping6 is called with a hostname instead of an Ipv4 address, it may kick off a DNS request to resolve
+        the Ipv6 address of the hostname prior to generating the ICMPv6 packet.</p>
+    <img src="ping6.png" alt="ping6 sequence diagram"/>
+    </div>
 <?php } ?>
     </div>
   </body>
