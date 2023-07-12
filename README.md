@@ -40,6 +40,10 @@ location ~ \.php$ {
   include snippets/fastcgi-php.conf;
   fastcgi_pass unix:/run/php/php-fpm.sock;
 }
+
+location /sitemap.xml {
+        rewrite /sitemap.xml /sitemap.php last;
+}
 ```
 
 ```
