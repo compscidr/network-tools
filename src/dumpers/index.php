@@ -1,6 +1,10 @@
 <?php
 require_once("functions.php");
-
+if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") {
+  $data = $_GET["bufferData"];
+} else {
+  $data = "";
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -27,11 +31,14 @@ require_once("functions.php");
       </div>
       <div class="row">
         <form method="get" action="">
-          <textarea class="form-control" id="bufferData" name="bufferData" rows="3" placeholder="Paste buffer data here in hex format"></textarea>
-          <input class="form-control" type="submit" value="Decode"/>
+          <textarea class="form-control" id="bufferData" name="bufferData" rows="3" placeholder="Paste buffer data here in hex format"><?php echo $data; ?></textarea>
+          <input class="form-control mt-2" type="submit" value="Decode"/>
         </form>
       </div>
 <?php if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") { ?>
+  <?php if (hasAddresses($_GET["bufferData"])) { ?>
+      <div class="alert alert-warning mt-2">Detected Addresses in Dump - removing</div>
+  <?php } ?>
       <div class="row pt-2">
         <h2 class="text-center logo">Ascii Decode</h2>
         <div class="col-auto" id="addresses" style="min-width: 62px;">

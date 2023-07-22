@@ -2,28 +2,29 @@
 // https://stackoverflow.com/a/31503474
 function remove_filename($url)
 {
-    $file_info = pathinfo($url);
-    return isset($file_info['extension'])
-        ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
-        : $url;
+  $file_info = pathinfo($url);
+  return isset($file_info['extension'])
+    ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
+    : $url;
 }
 
 // https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
-function reconstruct_url(){
-  if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+function reconstruct_url()
+{
+  if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $url = "https://";
   else
     $url = "http://";
 
   // Append the host(domain name, ip) to the URL.
-  $url.= $_SERVER['HTTP_HOST'];
+  $url .= $_SERVER['HTTP_HOST'];
 
   if ($_SERVER['SERVER_PORT'] != '443') {
-    $url.= ":".$_SERVER['SERVER_PORT'];
+    $url .= ":" . $_SERVER['SERVER_PORT'];
   }
 
   // Append the requested resource location to the URL
-  $url.= $_SERVER['REQUEST_URI'];
+  $url .= $_SERVER['REQUEST_URI'];
 
   $url_parts = parse_url($url);
   $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
@@ -38,13 +39,13 @@ function reconstruct_url(){
 
 function formatBufferData($data) {
   $count = 0;
-  $data = preg_replace("/\s*/m", '', $data);
+  $data = stripAddresses($data);
   $data = str_split($data, 2);
   for ($i = 0; $i < count($data); $i++) {
     if ($i % 16 == 0) {
       $count = 0;
-      if ($i != 0) {
-        ?></div><?php
+      if ($i != 0) { ?>
+        </div><?php
       }
       ?><div class="row mono" id="b<?php echo sprintf('%04x', $i); ?>"><?php printHexByte($data[$i]); echo " ";
     } else {
@@ -58,13 +59,51 @@ function formatBufferData($data) {
   ?></div><?php
 }
 
-function displayAddresses($data) {
-  $data = preg_replace("/\s*/m", '', $data);
+/**
+ * Determines if the data has 4 bytes (8 characters) of addresses prepended to the start of each line which should
+ * be stripped from the data
+ */
+function hasAddresses($data): bool
+{
+  $data = explode(' ', $data);
+  if (sizeof($data) > 0) {
+    if (strlen($data[0]) == 8) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Strings the addresses from the data and returns the data without them and without spaces.
+ */
+function stripAddresses($data): string
+{
+  $newdata = "";
+  if (hasAddresses($data)) {
+    foreach (preg_split("/((\r?\n)|(\r\n?))/", $data) as $line) {
+      $newline = substr($line, 8);
+      $newdata.=$newline;
+    }
+  } else {
+      $newdata = $data;
+  }
+  $newdata = preg_replace("/\s*/m", '', $newdata); // remove spaces
+  //$newdata = preg_replace("/[^0-9A-Fa-f]/", '', $newdata); // remove non-hex characters
+  return $newdata;
+}
+
+/**
+ * Based on how much data there is, shows the offset from 0 from the start of the data
+ */
+function displayAddresses($data): void {
+  $data = stripAddresses($data);
   $data = str_split($data, 2);
   for ($i = 0; $i < count($data); $i++) {
     if ($i % 16 == 0) {
       if ($i != 0) {
-        ?></div><?php
+        ?>
+        </div><?php
       }
       ?><div class="row mono" id="a<?php echo sprintf('%04x', $i);?>"><?php echo sprintf('%04x', $i);?><?php
     }
@@ -89,24 +128,23 @@ function printHexByte($data) {
 }
 
 function formatBufferDataAscii($data) {
-  $data = preg_replace("/\s*/m", '', $data);
+  $data = stripAddresses($data);
   $data = str_split($data, 2);
   for ($i = 0; $i < count($data); $i++) {
     if ($i % 16 == 0) {
-      if ($i != 0) {
-        ?></div><?php
+      if ($i != 0) { ?>
+        </div><?php
       }
       ?><div class="row mono"><?php printAsciiByte($data[$i]);
     } else {
       printAsciiByte($data[$i]);
     }
   }
-}
+  }
 
 function printAsciiByte($data) {
   $decimal = hexdec($data);
   if ($decimal < 32 or $decimal > 126) {
-    //$decimal = '<div class="col text-secondary">&bull;</span>';
     $decimal = "&bull;";
   } else {
     $decimal = chr($decimal);
