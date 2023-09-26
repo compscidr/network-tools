@@ -15,7 +15,7 @@ if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") {
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Decode buffer hexdumps into a readable format">
-    <meta name="keywords" content="hexdump, binary, decode, readable, ascii">
+    <meta name="keywords" content="hexdump, binary, decode, readable, ascii, byte browswer, hexonline, online, packet, dumper, buffer">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N2EK8QVKH4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

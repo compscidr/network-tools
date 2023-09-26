@@ -145,7 +145,7 @@ function remove_filename($url)
 }
 
 // https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
-function reconstruct_url(){
+function reconstruct_url() {
   if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $url = "https://";
   else
@@ -163,8 +163,9 @@ function reconstruct_url(){
 
   $url_parts = parse_url($url);
   $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
-
   $remove_file = remove_filename($constructed_url);
+  $remove_file = strstr($remove_file, "/stats/", true)."/";
+  $remove_file = strstr($remove_file, "/ping/", true)."/";
   if ($remove_file == "https:///" || $remove_file == "http://") {
     return $constructed_url;
   } else {
