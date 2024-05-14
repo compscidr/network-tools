@@ -4,19 +4,25 @@ require_once ("PingResult.php");
 
 function ping6($host): PingResult {
 
-  // get ip address from hostname (if an ip address is passed, it will return ip address
-  $hostname = gethostbyname($host);
-  //
-  $ip = ip2long($hostname);
-  if ($ip == false) {
-    return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
+  // determine if we have an ipv6 address already
+  if (!filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+    // get ip address from hostname (if an ip address is passed, it will return ip address
+    $hostname = getIPv6hostbyaddr($host);
+    if (is_null($hostname)) {
+      return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
+    }
+    // if we get here, we should have an ipv6 address from the hostname
+  } else {
+    // if we get here, the host is already an ipv6 address
+    $hostname = $host;
   }
+
   $output = shell_exec("ping6 -c3 $hostname");
 
   $db = new PingDB();
 
   if ($output == "") {
-    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable", true);
+    $result = new PingResult("", htmlspecialchars($hostname), 0.0, true, "$host is Unreachable", true);
     if ($db) {
       $db->addPingResult($result);
     }
@@ -38,19 +44,33 @@ function ping6($host): PingResult {
       $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
       $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
       $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
+      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output, true);
       if ($db) {
         $db->addPingResult($result);
       }
       return $result;
     } else {
-      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output, true);
+      $result = new PingResult($ip, htmlspecialchars($hostname), 0.0, true, $output, true);
       if ($db) {
         $db->addPingResult($result);
       }
       return $result;
     }
   }
+}
+
+/**
+ * Get the IPV6 address from a hostname
+ * https://www.ozzu.com/questions/604188/how-to-get-the-ipv6-address-from-hostname
+ *
+ * @param string $hostname
+ * @return string|null If no IPV6 address is found it will return null
+ */
+function getIPv6hostbyaddr($hostname): ?string
+{
+      $record = dns_get_record($hostname, DNS_AAAA);
+
+      return $record[0]['ipv6'] ?? null;
 }
 
 function last24HoursPingResults(PingResult $result) {

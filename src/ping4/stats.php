@@ -9,7 +9,7 @@ showHeader("Stats");
       <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">ping4.network</a></h1>
     </div>
 <?php if (isset($_GET["host"]) && $_GET["host"] != "") {
-  $result = new PingResult("", htmlspecialchars($_GET["host"]), 0.0, true, "");
+  $result = new PingResult("", htmlspecialchars($_GET["host"]), 0.0, true, "", true);
   ?>
     <div class="row">
       <h2 class="text-center logo">Stats for <?php echo $_GET["host"]; ?></h2>
