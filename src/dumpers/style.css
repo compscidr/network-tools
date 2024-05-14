@@ -3,3 +3,14 @@
 }
 .logo { color: #209CEE }
 .logo a { color: #209CEE; text-decoration: none; }
+.field { margin: 0px; padding: 0px; width: auto; height: auto; }
+.start { margin: 0px; padding: 0px; width: auto; height: auto; border-left: 1px solid black !important; border-right: 1px solid red; border-top: 1px solid black; border-bottom: 1px solid black; }
+.end { margin: 0px; padding: 0px; width: auto; height: auto; border-left: 1px solid white; border-right: 1px solid black !important; border-top: 1px solid black; border-bottom: 1px solid black;}
+.default { margin: 0px; padding: 0px; width: auto; height: auto; border-left: 1px solid white; border-right: 1px solid white; border-top: 1px solid black; border-bottom: 1px solid black; }
+.blank { margin: 0px; padding: 0px; width: auto; height: auto; border-left: 1px solid white; border-right: 1px solid white; border-top: 1px solid white; border-bottom: 1px solid white; }
+
+
+
+
+/** this must be after the start and end so it overwrites their non-important borders **/
+.ethernet { background-color: rgb(255, 198, 170); border-left: 1px solid rgb(255, 198, 170); border-right: solid 1px rgb(255, 198, 170); }

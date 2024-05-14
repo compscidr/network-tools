@@ -5,6 +5,7 @@ if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") {
 } else {
   $data = "";
 }
+$isEthernet = isEthernet($data);
 ?>
 <!doctype html>
 <html lang="en">
@@ -35,23 +36,32 @@ if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") {
           <input class="form-control mt-2" type="submit" value="Decode"/>
         </form>
       </div>
-<?php if (isset($_GET["bufferData"]) && $_GET["bufferData"] != "") { ?>
-  <?php if (hasAddresses($_GET["bufferData"])) { ?>
+<?php if ($data != "") { ?>
+  <?php if (hasAddresses($data)) { ?>
       <div class="alert alert-warning mt-2">Detected Addresses in Dump - removing</div>
   <?php } ?>
       <div class="row pt-2">
-        <h2 class="text-center logo">Ascii Decode</h2>
         <div class="col-auto" id="addresses" style="min-width: 62px;">
-          <?php displayAddresses($_GET["bufferData"]); ?>
+          <h2 class="text-center logo">&nbsp;</h2>
+          <?php displayAddresses($data); ?>
         </div>
         <div class="col-auto" id="formattedBufferData" style="min-width: 480px;">
-          <?php formatBufferData($_GET["bufferData"]); ?>
+          <h2 class="text-center logo">Hex Dump</h2>
+          <?php formatBufferData($data, $isEthernet); ?>
         </div>
         <div class="col-auto ps-5" id="formattedAsciiData" style="min-width: 154px;">
-          <?php formatBufferDataAscii($_GET["bufferData"]); ?>
+          <h2 class="text-center logo">Ascii Decode</h2>
+          <?php formatBufferDataAscii($data); ?>
         </div>
       </div>
 <?php } ?>
+    </div>
+    <div>
+    <?php
+      if($isEthernet) {
+        ?>Ethernet<?php
+      }
+    ?>
     </div>
   </body>
 </html>
