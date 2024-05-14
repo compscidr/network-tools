@@ -3,12 +3,20 @@ require_once ("db.php");
 require_once ("PingResult.php");
 
 function ping6($host): PingResult {
-  $output = shell_exec("ping6 -c3 ".$_GET["host"]);
+
+  // get ip address from hostname (if an ip address is passed, it will return ip address
+  $hostname = gethostbyname($host);
+  //
+  $ip = ip2long($hostname);
+  if ($ip == false) {
+    return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
+  }
+  $output = shell_exec("ping6 -c3 $hostname");
 
   $db = new PingDB();
 
   if ($output == "") {
-    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable");
+    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable", true);
     if ($db) {
       $db->addPingResult($result);
     }
@@ -36,7 +44,7 @@ function ping6($host): PingResult {
       }
       return $result;
     } else {
-      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output);
+      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output, true);
       if ($db) {
         $db->addPingResult($result);
       }
@@ -46,6 +54,9 @@ function ping6($host): PingResult {
 }
 
 function last24HoursPingResults(PingResult $result) {
+  if (!$result->valid) {
+    return;
+  }
   $db = new PingDB();
   if ($db) {
     $results = $db->last24HoursPingResults($result);
@@ -99,6 +110,9 @@ function last24HoursPingResults(PingResult $result) {
 }
 
 function statComparison(PingResult $result) {
+  if (!$result->valid) {
+    return;
+  }
   $db = new PingDB();
   if ($db) {
     $results = $db->statComparison($result);

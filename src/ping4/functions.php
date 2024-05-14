@@ -3,12 +3,20 @@ require_once ("db.php");
 require_once ("PingResult.php");
 
 function ping4($host): PingResult {
-  $output = shell_exec("ping4 -c3 ".$_GET["host"]);
+
+  // get ip address from hostname (if an ip address is passed, it will return ip address
+  $hostname = gethostbyname($host);
+  //
+  $ip = ip2long($hostname);
+  if ($ip == false) {
+    return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
+  }
+  $output = shell_exec("ping4 -c3 $hostname");
 
   $db = new PingDB();
 
   if ($output == "") {
-    $result = new PingResult("", htmlspecialchars($host), 0.0, true, "$host is Unreachable");
+    $result = new PingResult("", htmlspecialchars($hostname), 0.0, true, "$host is Unreachable", true);
     if ($db) {
       $db->addPingResult($result);
     }
@@ -30,14 +38,14 @@ function ping4($host): PingResult {
       $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
       $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
       $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output);
+      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output, true);
       //print_r($result);
       if ($db) {
         $db->addPingResult($result);
       }
       return $result;
     } else {
-      $result = new PingResult($ip, htmlspecialchars($host), 0.0, true, $output);
+      $result = new PingResult($ip, htmlspecialchars($hostname), 0.0, true, $output, true);
       if ($db) {
         $db->addPingResult($result);
       }
@@ -47,6 +55,9 @@ function ping4($host): PingResult {
 }
 
 function last24HoursPingResults(PingResult $result) {
+  if (!$result->valid) {
+    return;
+  }
   $db = new PingDB();
   if ($db) {
     $results = $db->last24HoursPingResults($result);
@@ -100,6 +111,9 @@ function last24HoursPingResults(PingResult $result) {
 }
 
 function statComparison(PingResult $result) {
+  if (!$result->valid) {
+    return;
+  }
   $db = new PingDB();
   if ($db) {
     $results = $db->statComparison($result);
