@@ -3,8 +3,8 @@ version: '3.9'
 services:
   web:
     image: nginx:latest
-    ports:
-      - '8000:80'
+    expose:
+      - "80"
     volumes:
       - ./src:/var/www/html
       - ./default.conf:/etc/nginx/conf.d/default.conf
@@ -12,6 +12,12 @@ services:
       - default
     links:
       - php-fpm-ping
+    environment:
+      - VIRTUAL_HOST=ping4.network,ping6.network,dumpers.xyz,www.ping4.network,www.ping6.network,www.dumpers.xyz
+      - LETSENCRYPT_HOST=ping4.network,ping6.network,dumpers.xyz
+      - LETSENCRYPT_EMAIL=ernstjason1@gmail.com
+    restart: unless-stopped
+
   php-fpm-ping:
     build:
       context: .
@@ -22,7 +28,12 @@ services:
     networks:
       - default
       - net2
+    restart: unless-stopped
+
 networks:
+  default:
+    external: true
+    name: bridge
   net2:
     name: net2
     enable_ipv6: true
