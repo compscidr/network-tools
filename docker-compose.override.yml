@@ -1,18 +1,14 @@
 # Local development override
-# This file is automatically loaded by docker-compose and restores
-# the port mapping for local dev (no nginx-proxy needed)
-#
-# For production: use docker-compose.prod.yml or deploy with nginx-proxy
-
-version: '3.9'
+# This file is automatically loaded by docker-compose
+# For local dev: creates the nginx-proxy network locally
+# In production: ansible creates the network before deploying
 
 services:
   web:
     ports:
       - "8000:80"
-    networks:
-      - default
 
 networks:
-  default:
+  nginx-proxy:
     external: false
+    driver: bridge
