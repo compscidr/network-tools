@@ -10,8 +10,8 @@ services:
       - nginx-proxy
       - backend
     environment:
-      - VIRTUAL_HOST=ping4.network,ping6.network,dumpers.xyz,www.ping4.network,www.ping6.network,www.dumpers.xyz
-      - LETSENCRYPT_HOST=ping4.network,ping6.network,dumpers.xyz,www.ping4.network,www.ping6.network,www.dumpers.xyz
+      - VIRTUAL_HOST=www.ping4.network,www.ping6.network,www.dumpers.xyz
+      - LETSENCRYPT_HOST=www.ping4.network,www.ping6.network,www.dumpers.xyz
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-ernstjason1@gmail.com}
     restart: unless-stopped
 
