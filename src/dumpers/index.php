@@ -50,6 +50,7 @@ $isEthernet = isEthernet($data);
         <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">Hexdump Buffer Decoder</a></h1>
       </div>
       <div class="row">
+        <h2 class="text-center fs-5 text-muted">Online hexdump decoder – paste a hex dump, get the bytes and ASCII</h2>
         <form method="get" action="">
           <textarea class="form-control" id="bufferData" name="bufferData" rows="3" placeholder="Paste buffer data here in hex format"><?php echo $data; ?></textarea>
           <input class="form-control mt-2" type="submit" value="Decode"/>
