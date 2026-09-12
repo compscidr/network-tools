@@ -1,42 +1,12 @@
 <?php
 require_once("FieldResult.php");
 
-// https://stackoverflow.com/a/31503474
-function remove_filename($url)
+/** Scheme + host + directory of the current request, e.g. https://www.ping4.network/ */
+function reconstruct_url(): string
 {
-  $file_info = pathinfo($url);
-  return isset($file_info['extension'])
-    ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
-    : $url;
-}
-
-// https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
-function reconstruct_url()
-{
-  if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-    $url = "https://";
-  else
-    $url = "http://";
-
-  // Append the host(domain name, ip) to the URL.
-  $url .= $_SERVER['HTTP_HOST'];
-
-  if ($_SERVER['SERVER_PORT'] != '443') {
-    $url .= ":" . $_SERVER['SERVER_PORT'];
-  }
-
-  // Append the requested resource location to the URL
-  $url .= $_SERVER['REQUEST_URI'];
-
-  $url_parts = parse_url($url);
-  $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
-
-  $remove_file = remove_filename($constructed_url);
-  if ($remove_file == "https:///" || $remove_file == "http://") {
-    return $constructed_url;
-  } else {
-    return $remove_file;
-  }
+  $https = ($_SERVER['HTTPS'] ?? 'off') === 'on' || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+  $dir = rtrim(dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/') . '/';
+  return ($https ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $dir;
 }
 
 function formatBufferData($data, $isEthernet) {
@@ -58,7 +28,7 @@ function formatBufferData($data, $isEthernet) {
   <span class="blank">0D</span>&nbsp;
   <span class="blank">0E</span>&nbsp;
   <span class="blank">0F</span>&nbsp;
-</div><?
+</div><?php
   $byte = 0;
   $count = 0;
   $data = stripAddresses($data);
@@ -149,7 +119,7 @@ function stripAddresses($data): string
  * Based on how much data there is, shows the offset from 0 from the start of the data
  */
 function displayAddresses($data): void {
-  ?><br/><?
+  ?><br/><?php
   $data = stripAddresses($data);
   $data = str_split($data, 2);
   for ($i = 0; $i < count($data); $i++) {
@@ -191,7 +161,7 @@ function printHexByte($data, $start, $end, $class) {
 }
 
 function formatBufferDataAscii($data) {
-  ?><div class="row mono">0123456789ABCDEF</div><?
+  ?><div class="row mono">0123456789ABCDEF</div><?php
   $data = stripAddresses($data);
   $data = str_split($data, 2);
   for ($i = 0; $i < count($data); $i++) {
@@ -232,7 +202,6 @@ function isEthernet($data): bool {
     return true;
   }
 
-  echo "$data[24] $data[25] $data[26] $data[27]";
 
   return false;
 }
