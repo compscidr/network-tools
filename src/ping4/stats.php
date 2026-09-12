@@ -1,7 +1,7 @@
 <?php
 require_once("functions.php");
 require_once("template.php");
-showHeader("Stats");
+showHeader("IPv4 ping stats - global stats and recent pings | ping4.network");
 ?>
 <body class="d-flex">
   <div class="mx-auto flex-column w-50">
