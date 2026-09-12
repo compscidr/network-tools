@@ -1,6 +1,7 @@
 <?php
 require_once("FieldResult.php");
 require_once(__DIR__ . "/../common/url.php");
+require_once(__DIR__ . "/../common/footer.php");
 
 
 function formatBufferData($data, $isEthernet) {
