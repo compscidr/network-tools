@@ -27,8 +27,8 @@ function ping6($host): PingResult {
 }
 
 /** Turn raw `ping -c3` stdout into a PingResult. $hostname is the resolved IP. */
-function parsePingOutput(string $host, string $hostname, string $output): PingResult {
-  if ($output == "") {
+function parsePingOutput(string $host, string $hostname, ?string $output): PingResult {
+  if (!$output) {
     return new PingResult("", htmlspecialchars($hostname), 0.0, true, "$host is Unreachable", true);
   }
   // https://write.corbpie.com/ping-address-and-get-min-max-average-with-php/

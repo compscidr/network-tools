@@ -32,6 +32,13 @@ trait ReconstructUrlTests
         unset($_SERVER['HTTP_X_FORWARDED_PROTO']);
     }
 
+    public function testReconstructUrlKeepsNonStandardPortFromHostHeader(): void
+    {
+        $this->server('/index.php', https: false);
+        $_SERVER['HTTP_HOST'] = 'localhost:8080';
+        $this->assertSame('http://localhost:8080/', reconstruct_url());
+    }
+
     public function testReconstructUrlUsesHttpWhenNotHttps(): void
     {
         $this->server('/', https: false);

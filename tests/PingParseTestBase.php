@@ -59,6 +59,13 @@ abstract class PingParseTestBase extends TestCase
         $this->assertSame('example.test is Unreachable', $r->rawResult);
     }
 
+    public function testNullOutputFromShellExecIsUnreachable(): void
+    {
+        $r = parsePingOutput('example.test', '192.0.2.1', null);
+        $this->assertTrue($r->down);
+        $this->assertSame('example.test is Unreachable', $r->rawResult);
+    }
+
     public function testHostnameIsHtmlEscaped(): void
     {
         $r = parsePingOutput('<b>x</b>', '8.8.8.8', self::OK);
