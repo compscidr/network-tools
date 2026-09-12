@@ -39,6 +39,13 @@ trait ReconstructUrlTests
         $this->assertSame('http://localhost:8080/', reconstruct_url());
     }
 
+    public function testReconstructUrlEscapesHostHeaderForHtmlAttributes(): void
+    {
+        $this->server('/');
+        $_SERVER['HTTP_HOST'] = 'x.test"><script>';
+        $this->assertSame('https://x.test&quot;&gt;&lt;script&gt;/', reconstruct_url());
+    }
+
     public function testReconstructUrlUsesHttpWhenNotHttps(): void
     {
         $this->server('/', https: false);

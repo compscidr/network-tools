@@ -1,9 +1,8 @@
 <?php
-$site = "ping" . PING_VERSION . ".network";
-$description = "Ping an IPv" . PING_VERSION . " address or hostname online. Free IPv" . PING_VERSION . " ping test showing round-trip time, packet loss and 24-hour history for any host.";
+define("SITE", "ping" . PING_VERSION . ".network");
+define("DESCRIPTION", "Ping an IPv" . PING_VERSION . " address or hostname online. Free IPv" . PING_VERSION . " ping test showing round-trip time, packet loss and 24-hour history for any host.");
 
 function showHeader($title) {
-  global $site, $description;
   ?>
 <!doctype html>
 <html lang="en">
@@ -26,24 +25,24 @@ function showHeader($title) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js" integrity="sha512-+IpCthlNahOuERYUSnKFjzjdKXIbJ/7Dd6xvUp+7bEw0Jp2dg6tluyxLs+zq9BMzZgrLv8886T4cBSqnKiVgUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="<?php echo $description; ?>">
+    <meta name="description" content="<?php echo DESCRIPTION; ?>">
     <meta property="og:type" content="website">
     <meta property="og:title" content="<?php echo $title; ?>">
-    <meta property="og:description" content="<?php echo $description; ?>">
-<?php $canonical = "https://www.$site" . str_replace("/index.php", "/", $_SERVER["SCRIPT_NAME"]); ?>
+    <meta property="og:description" content="<?php echo DESCRIPTION; ?>">
+<?php $canonical = "https://www." . SITE . str_replace("/index.php", "/", $_SERVER["SCRIPT_NAME"]); ?>
     <link rel="canonical" href="<?php echo $canonical; ?>">
     <meta property="og:url" content="<?php echo $canonical; ?>">
 <?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
     <meta name="robots" content="noindex,follow">
 <?php } ?>
-<?php if ($canonical == "https://www.$site/") { ?>
+<?php if ($canonical == "https://www." . SITE . "/") { ?>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "<?php echo $site; ?> - Online IPv<?php echo PING_VERSION; ?> Ping Test",
-      "url": "https://www.<?php echo $site; ?>/",
-      "description": "<?php echo $description; ?>",
+      "name": "<?php echo SITE; ?> - Online IPv<?php echo PING_VERSION; ?> Ping Test",
+      "url": "https://www.<?php echo SITE; ?>/",
+      "description": "<?php echo DESCRIPTION; ?>",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
