@@ -22,11 +22,28 @@ function showHeader($title) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js" integrity="sha512-+IpCthlNahOuERYUSnKFjzjdKXIbJ/7Dd6xvUp+7bEw0Jp2dg6tluyxLs+zq9BMzZgrLv8886T4cBSqnKiVgUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host">
-    <meta name="keywords" content="Ping4, Online, Ipv4, ICMPv4, ping test, ping check, ping ip,  reply, echo, request, response, ipping, ping hostname, ping a hostname, ping any website, ping for website, ping this website, ping domain">
+    <meta name="description" content="Ping an IPv4 address or hostname online. Free IPv4 ping test showing round-trip time, packet loss and 24-hour history for any host.">
     <meta property="og:type" content="website">
     <meta property="og:title" content="<?php echo $title; ?>">
-    <meta property="og:description" content="Run an Ipv4 ICMPv4 ping online to test the reachability of an Ipv4 host">
+    <meta property="og:description" content="Ping an IPv4 address or hostname online. Free IPv4 ping test showing round-trip time, packet loss and 24-hour history for any host.">
+<?php $canonical = "https://www.ping4.network" . str_replace("/index.php", "/", $_SERVER["SCRIPT_NAME"]); ?>
+    <link rel="canonical" href="<?php echo $canonical; ?>">
+    <meta property="og:url" content="<?php echo $canonical; ?>">
+<?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
+    <meta name="robots" content="noindex,follow">
+<?php } ?>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ping4.network - Online IPv4 Ping Test",
+      "url": "https://www.ping4.network/",
+      "description": "Ping an IPv4 address or hostname online. Free IPv4 ping test showing round-trip time, packet loss and 24-hour history for any host.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
   </head>
   <?php
 }

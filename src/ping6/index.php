@@ -2,9 +2,9 @@
 require_once("functions.php");
 require_once("template.php");
 if (isset($_GET["host"]) && $_GET["host"] != "") {
-  showHeader("ping6 - pinging ".$_GET["host"]);
+  showHeader("Ping IPv6 results for ".htmlspecialchars($_GET["host"])." | ping6.network");
 } else {
-  showHeader("ping6 - send ICMPv6 ECHO_REQUEST to network hosts");
+  showHeader("Ping IPv6 Online - Free IPv6 Ping Test Tool | ping6.network");
 }
 ?>
   <body class="d-flex">
