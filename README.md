@@ -2,10 +2,10 @@
 This is a collection of simple network and network related tools that are
 deployed in an online fashion to make it easy for people to interact with them.
 
-- ping4
-- ping6
-- hexdump
-- packetdump
+- [ping4.network](https://www.ping4.network) - online IPv4 ping test
+- [ping6.network](https://www.ping6.network) - online IPv6 ping test
+- [dumpers.xyz](https://www.dumpers.xyz) - hexdump decoder
+- packetdump (not yet deployed)
 
 Eventually I'll build apis attached to them so people can use them directly for
 money. At the start, I'll see if I can make it work with advertisements.
