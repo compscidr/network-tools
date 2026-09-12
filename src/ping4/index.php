@@ -10,6 +10,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
     <div class="mx-auto flex-column w-50">
       <div class="row">
         <h1 class="text-center pt-5 logo"><a href="<?php echo reconstruct_url(); ?>">ping4.network</a></h1>
+        <h2 class="text-center fs-5 text-muted">Online IPv4 ping test – ping any IPv4 address or hostname</h2>
         <form id="ping4" method="get" action="<?php echo reconstruct_url(); ?>index.php" class="d-flex">
           <input type="text" placeholder="IPv4 address or hostname" name="host" class="form-control me-2">
           <input type="button" value="Ping Ipv4 host" onclick="document.getElementById('ping4').submit();" class="btn btn-primary">
