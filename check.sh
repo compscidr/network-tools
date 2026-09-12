@@ -2,7 +2,7 @@
 # Lint every PHP file and smoke-render each site's landing page.
 set -euo pipefail
 cd "$(dirname "$0")/src"
-PHP="php -d short_open_tag=1 -d display_errors=stderr"
+PHP="php -d display_errors=stderr"
 
 for f in $(find . -name '*.php'); do $PHP -l "$f" >/dev/null || exit 1; done
 

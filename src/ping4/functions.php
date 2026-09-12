@@ -12,46 +12,30 @@ function ping4($host): PingResult {
     return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
   }
   $output = shell_exec("ping4 -c3 $hostname");
-
+  $result = parsePingOutput($host, $hostname, $output);
   $db = new PingDB();
-
-  if ($output == "") {
-    $result = new PingResult("", htmlspecialchars($hostname), 0.0, true, "$host is Unreachable", true);
-    if ($db) {
-      $db->addPingResult($result);
-    }
-    return $result;
-  } else {
-    // https://write.corbpie.com/ping-address-and-get-min-max-average-with-php/
-    $output_lines = explode("\n", $output);
-    //print_r($output_lines);
-    $ping_line = explode(" ", $output_lines[0]);
-
-    //print_r($ping_line);
-    $ip = $ping_line[2];
-    $ip = trim($ip, "()");
-
-    // minus 2 because there is a last line with just a /n char
-    $rtt_line = $output_lines[sizeof($output_lines)-2];
-    if(str_contains($rtt_line, "rtt")) {
-      $values = explode("/", $rtt_line);
-      $min = filter_var($values[3], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-      $max = filter_var($values[5], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-      $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-      $result = new PingResult($ip, htmlspecialchars($host), $avg, false, $output, true);
-      //print_r($result);
-      if ($db) {
-        $db->addPingResult($result);
-      }
-      return $result;
-    } else {
-      $result = new PingResult($ip, htmlspecialchars($hostname), 0.0, true, $output, true);
-      if ($db) {
-        $db->addPingResult($result);
-      }
-      return $result;
-    }
+  if ($db) {
+    $db->addPingResult($result);
   }
+  return $result;
+}
+
+/** Turn raw `ping -c3` stdout into a PingResult. $hostname is the resolved IP. */
+function parsePingOutput(string $host, string $hostname, ?string $output): PingResult {
+  if (!$output) {
+    return new PingResult("", htmlspecialchars($hostname), 0.0, true, "$host is Unreachable", true);
+  }
+  // https://write.corbpie.com/ping-address-and-get-min-max-average-with-php/
+  $output_lines = explode("\n", $output);
+  $ip = trim(explode(" ", $output_lines[0])[2], "()");
+  // minus 2 because there is a last line with just a /n char
+  $rtt_line = $output_lines[sizeof($output_lines)-2];
+  if (!str_contains($rtt_line, "rtt")) {
+    return new PingResult($ip, htmlspecialchars($hostname), 0.0, true, $output, true);
+  }
+  $values = explode("/", $rtt_line);
+  $avg = filter_var($values[4], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+  return new PingResult($ip, htmlspecialchars($host), (float)$avg, false, $output, true);
 }
 
 function last24HoursPingResults(PingResult $result) {
@@ -149,40 +133,11 @@ function lastPings($n) {
   }
 }
 
-// https://stackoverflow.com/a/31503474
-function remove_filename($url)
+/** Scheme + host + directory of the current request, e.g. https://www.ping4.network/ */
+function reconstruct_url(): string
 {
-    $file_info = pathinfo($url);
-    return isset($file_info['extension'])
-        ? str_replace($file_info['filename'] . "." . $file_info['extension'], "", $url)
-        : $url;
-}
-
-// https://stackoverflow.com/questions/6969645/how-to-remove-the-querystring-and-get-only-the-url
-function reconstruct_url(){
-  if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-    $url = "https://";
-  else
-    $url = "http://";
-
-  // Append the host(domain name, ip) to the URL.
-  $url.= $_SERVER['HTTP_HOST'];
-
-  if ($_SERVER['SERVER_PORT'] != '443') {
-    $url.= ":".$_SERVER['SERVER_PORT'];
-  }
-
-  // Append the requested resource location to the URL
-  $url.= $_SERVER['REQUEST_URI'];
-
-  $url_parts = parse_url($url);
-  $constructed_url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
-
-  $remove_file = remove_filename($constructed_url);
-  if ($remove_file == "https:///" || $remove_file == "http://") {
-    return $constructed_url;
-  } else {
-    return $remove_file;
-  }
+  $https = ($_SERVER['HTTPS'] ?? 'off') === 'on' || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+  $dir = rtrim(dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/') . '/';
+  return ($https ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $dir;
 }
 ?>
