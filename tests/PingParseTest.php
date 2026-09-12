@@ -1,22 +1,11 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/ReconstructUrlTests.php';
 
-/**
- * ping4 and ping6 carry identical parsing code but clash on function/class
- * names, so each concrete subclass loads one site in its own process.
- */
-abstract class PingParseTestBase extends TestCase
+require_once __DIR__ . '/../src/common/ping.php';
+
+final class PingParseTest extends TestCase
 {
-    use ReconstructUrlTests;
-
-    abstract protected function site(): string;
-
-    protected function setUp(): void
-    {
-        require_once __DIR__ . '/../src/' . $this->site() . '/functions.php';
-    }
 
     private const OK = "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n"
         . "64 bytes from 8.8.8.8: icmp_seq=1 ttl=116 time=18.4 ms\n"
@@ -64,6 +53,12 @@ abstract class PingParseTestBase extends TestCase
         $r = parsePingOutput('example.test', '192.0.2.1', null);
         $this->assertTrue($r->down);
         $this->assertSame('example.test is Unreachable', $r->rawResult);
+    }
+
+    public function testResolveReturnsIpLiteralsUnchanged(): void
+    {
+        $this->assertSame('8.8.8.8', resolvePingHost('8.8.8.8', 4));
+        $this->assertSame('2001:4860:4860::8888', resolvePingHost('2001:4860:4860::8888', 6));
     }
 
     public function testHostnameIsHtmlEscaped(): void

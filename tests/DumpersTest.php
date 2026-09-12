@@ -2,12 +2,9 @@
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../src/dumpers/functions.php';
-require_once __DIR__ . '/ReconstructUrlTests.php';
 
 final class DumpersTest extends TestCase
 {
-    use ReconstructUrlTests;
-
     // 14 bytes: dst MAC, src MAC, EtherType
     private const ETH_IPV4 = 'ffffffffffff001122334455' . '0800';
     private const ETH_IPV6 = 'ffffffffffff001122334455' . '86DD';

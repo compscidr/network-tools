@@ -1,23 +1,34 @@
 <?php
-require_once ("db.php");
-require_once ("PingResult.php");
+// Shared by ping4/ping6. The including site defines PING_VERSION (4|6), PING_DB, SITE_HOST, GA_ID.
+require_once(__DIR__ . "/db.php");
+require_once(__DIR__ . "/PingResult.php");
+require_once(__DIR__ . "/url.php");
 
-function ping4($host): PingResult {
-
-  // get ip address from hostname (if an ip address is passed, it will return ip address
-  $hostname = gethostbyname($host);
-  //
-  $ip = ip2long($hostname);
-  if ($ip == false) {
-    return new PingResult($hostname, "", 0.0, false, "Invalid host", false);
+function ping(string $host): PingResult {
+  $hostname = resolvePingHost($host, PING_VERSION);
+  if (is_null($hostname)) {
+    return new PingResult("", "", 0.0, false, "Invalid host", false);
   }
-  $output = shell_exec("ping4 -c3 $hostname");
+  $output = shell_exec("ping" . PING_VERSION . " -c3 $hostname");
   $result = parsePingOutput($host, $hostname, $output);
   $db = new PingDB();
   if ($db) {
     $db->addPingResult($result);
   }
   return $result;
+}
+
+/** Resolve $host to a validated IPv$v literal (safe to pass to a shell), or null. */
+function resolvePingHost(string $host, int $v): ?string {
+  if ($v == 4) {
+    $ip = gethostbyname($host);
+    return ip2long($ip) ? $ip : null;
+  }
+  if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+    return $host;
+  }
+  // https://www.ozzu.com/questions/604188/how-to-get-the-ipv6-address-from-hostname
+  return dns_get_record($host, DNS_AAAA)[0]['ipv6'] ?? null;
 }
 
 /** Turn raw `ping -c3` stdout into a PingResult. $hostname is the resolved IP. */
@@ -133,11 +144,4 @@ function lastPings($n) {
   }
 }
 
-/** Scheme + host + directory of the current request, e.g. https://www.ping4.network/ */
-function reconstruct_url(): string
-{
-  $https = ($_SERVER['HTTPS'] ?? 'off') === 'on' || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
-  $dir = rtrim(dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/') . '/';
-  return ($https ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $dir;
-}
 ?>
