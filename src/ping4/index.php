@@ -54,6 +54,12 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         <img src="ping4.png" alt="ping4 sequence diagram">
       </div>
 <?php } ?>
+      <footer class="row pt-5 pb-3 text-center small text-muted">
+        <p>Open source on <a href="https://github.com/compscidr/network-tools">GitHub</a> &middot;
+          <a href="https://www.ping4.network">ping4.network</a> &middot;
+          <a href="https://www.ping6.network">ping6.network</a> &middot;
+          <a href="https://www.dumpers.xyz">dumpers.xyz</a></p>
+      </footer>
     </div>
   </body>
 </html>
