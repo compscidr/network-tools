@@ -22,6 +22,7 @@ services:
     volumes:
       - ./data:/data
       - ./src:/var/www/html
+      - ./.git:/git:ro # footer shows the deployed commit
     networks:
       - backend
       - ipv6net

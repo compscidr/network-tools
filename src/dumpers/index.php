@@ -88,6 +88,7 @@ $isEthernet = isEthernet($data);
             <a href="https://www.ping6.network">ping6.network</a>.</p>
       </div>
 <?php } ?>
+<?php showFooter(); ?>
     </div>
     <div>
     <?php

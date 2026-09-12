@@ -54,6 +54,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         <img src="ping4.png" alt="ping4 sequence diagram">
       </div>
 <?php } ?>
+<?php showFooter(); ?>
     </div>
   </body>
 </html>
