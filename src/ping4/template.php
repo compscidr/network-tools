@@ -32,6 +32,7 @@ function showHeader($title) {
 <?php if (isset($_GET["host"]) && $_GET["host"] != "") { ?>
     <meta name="robots" content="noindex,follow">
 <?php } ?>
+<?php if ($canonical == "https://www.ping4.network/") { ?>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -44,6 +45,7 @@ function showHeader($title) {
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
+<?php } ?>
   </head>
   <?php
 }
