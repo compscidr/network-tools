@@ -1,6 +1,5 @@
 <?php
-require_once("functions.php");
-require_once("template.php");
+require_once("config.php");
 if (isset($_GET["host"]) && $_GET["host"] != "") {
   showHeader("Ping IPv6 results for ".htmlspecialchars($_GET["host"])." | ping6.network");
 } else {
@@ -21,7 +20,7 @@ if (isset($_GET["host"]) && $_GET["host"] != "") {
         <h2 class="text-center logo">Ping6 results for <?php echo $_GET["host"]; ?></h2>
       </div>
       <div class="row pt-5 text-center mx-auto">
-        <pre><?php $result = ping6($_GET["host"]); echo $result->rawResult; ?></pre>
+        <pre><?php $result = ping($_GET["host"]); echo $result->rawResult; ?></pre>
       </div>
       <div class="row pt-5 text-center mx-auto" style="max-width: 410px;">
         <div id="chart"></div>
