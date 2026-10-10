@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-/** Renders the shared stats page end-to-end against a throwaway sqlite db. */
+/** Renders the shared stats page end-to-end against a throwaway sqlite db (no migrate: PingDB must create its own schema). */
 final class StatsPageTest extends TestCase
 {
     public static function setUpBeforeClass(): void
@@ -11,9 +11,6 @@ final class StatsPageTest extends TestCase
         define('GA_ID', 'G-TEST');
         require_once __DIR__ . '/../src/common/ping.php';
         require_once __DIR__ . '/../src/common/ping-template.php';
-        ob_start();
-        require __DIR__ . '/../src/common/ping-migrate.php';
-        ob_end_clean();
     }
 
     private function render(string $host): string
