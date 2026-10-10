@@ -15,9 +15,10 @@ money. At the start, I'll see if I can make it work with advertisements.
 docker-compose up
 ```
 
-### Migrations
+### Database
+The container chowns `./data` to www-data on start, and each site creates its
+sqlite db and table on first use. To browse it:
 ```
-docker exec -u www-data:www-data -it network-tools_php-fpm-ping_1 php ping4/migrate.php
 docker run -it --rm -p 8080:8080 -v ./data:/data -e SQLITE_DATABASE="ping4.db" coleifer/sqlite-web
 ```
 
@@ -52,12 +53,4 @@ systemctl restart nginx
 
 ```
 certbot --nginx -d <domain> -d www.<domain>
-```
-
-### Create / Migrate db
-```
-mkdir /data
-sudo chown www-data:www-data /data
-php /var/www/html/migrate.php
-chown www-data:www-data /data/ping4.db
 ```

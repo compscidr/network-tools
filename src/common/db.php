@@ -4,6 +4,16 @@
 class PingDB extends SQLite3 {
   function __construct() {
     $this->open(PING_DB);
+    // hostname maximum length: https://web.archive.org/web/20190518124533/https://devblogs.microsoft.com/oldnewthing/?p=7873
+    $this->exec(<<<EOF
+      CREATE TABLE IF NOT EXISTS PING
+      (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      HOST           CHAR(253)  NOT NULL,
+      IP             CHAR(15)   NOT NULL,
+      DOWN           BOOLEAN    NOT NULL,
+      AVG_RTT_MS     FLOAT      NOT NULL,
+      TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP);
+    EOF);
   }
 
   function addPingResult(PingResult $result) {
