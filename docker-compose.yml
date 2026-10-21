@@ -19,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      pull: true # always pull php:8-fpm so a rebuild picks up PHP security releases
     volumes:
       - ./data:/data
       - ./src:/var/www/html
