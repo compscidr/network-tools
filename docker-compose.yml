@@ -1,6 +1,7 @@
 services:
   web:
     image: nginx:latest
+    mem_limit: 64m # compscidr/iac#919: every container on the shared droplet is capped
     expose:
       - "80"
     volumes:
@@ -16,6 +17,7 @@ services:
     restart: unless-stopped
 
   php-fpm-ping:
+    mem_limit: 128m
     build:
       context: .
       dockerfile: Dockerfile
